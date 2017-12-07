@@ -13,11 +13,10 @@ import math
 
 
 class Node():
-    def __init__(self, sequence, edit_distance):
+    def __init__(self, sequence=None, edit_distance=0):
         self.left = None
         self.right = None
-        self.org_seq = sequence
-        self.seq = None
+        self.seq = sequence
         self.edit_d = edit_distance
 
 class Tree():
