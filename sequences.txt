@@ -1,4 +1,6 @@
 acgt
 ccgt
+agtt
 accg
 acct
+actc
