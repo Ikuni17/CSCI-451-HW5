@@ -25,6 +25,11 @@ def edit_distance(s, t):
 def build_d(sequences):
     d = np.ndarray(shape=(len(sequences), len(sequences[0])))
 
+def build_tree(sequences, d):
+    indices = {x: x for x in len(sequences)}
+    print(indices)
+
+
 
 def main():
     file = 'sequences.txt'
