@@ -25,14 +25,14 @@ class Tree():
 
     def preorder(self, node):
         if node.left == None:
-            print(node.org_seq)
+            print(node.seq)
         self.preorder(node.left)
         self.preorder(node.right)
 
     def postorder(self, node):
         self.postorder(node.left)
         if node.left == None:
-            print(node.org_seq)
+            print(node.seq)
         self.postorder(node.right)
 
 def edit_distance(s, t):
