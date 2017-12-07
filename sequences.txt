@@ -1,4 +1,4 @@
 acgt
+ccgt
+accg
 acct
-adaq
-agta
