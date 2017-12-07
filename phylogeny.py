@@ -83,7 +83,8 @@ def build_tree(sequences, d):
         else:
             row += 1
             count = row + 1
-    print(indices)
+    #dictionary of inital leaf pairs
+    return(indices)
 
 
 def read_sequences():
