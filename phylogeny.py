@@ -12,6 +12,30 @@ import sys
 import math
 
 
+class Node():
+    def __init__(self, sequence, edit_distance):
+        self.left = None
+        self.right = None
+        self.org_seq = sequence
+        self.seq = None
+        self.edit_d = edit_distance
+
+class Tree():
+    def __init__(self, root):
+        self.root = root
+
+    def preorder(self, node):
+        if node.left == None:
+            print(node.org_seq)
+        self.preorder(node.left)
+        self.preorder(node.right)
+
+    def postorder(self, node):
+        self.postorder(node.left)
+        if node.left == None:
+            print(node.org_seq)
+        self.postorder(node.right)
+
 def edit_distance(s, t):
     count = 0
     for i in range(len(s)):
@@ -86,10 +110,15 @@ def read_sequences():
     return sequences
 
 
+def tree_test():
+    seq = ['abc', 'def', 'ghi', 'jkl', 'mno', 'pqr', 'stu']
+
 def main():
     sequences = read_sequences()
     d = build_d(sequences)
     print(d)
     build_tree(sequences, d)
 
-main()
+
+if __name__ == '__main__':
+    main()
