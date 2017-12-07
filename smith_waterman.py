@@ -123,9 +123,10 @@ def main():
     #t = "ctcatgc"
     # Randomly generated strings
     length = 12
-    s = ''.join(choice('actg') for i in range(length))
-    t = ''.join(choice('actg') for i in range(length))
-
+    #s = ''.join(choice('actg') for i in range(length))
+    #t = ''.join(choice('actg') for i in range(length))
+    s = 'actg'
+    t = 'tccg'
     # Convert the strings to list for easier indexing
     s_list = list(s)
     t_list = list(t)
