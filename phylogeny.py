@@ -13,28 +13,11 @@ import math
 
 
 class Node():
-    def __init__(self, sequence=None, edit_distance=0):
+    def __init__(self, sequence=None):
         self.left = None
         self.right = None
         self.parent = None
         self.seq = sequence
-        self.edit_d = edit_distance
-
-class Tree():
-    def __init__(self, root):
-        self.root = root
-
-    def preorder(self, node):
-        if node.left == None:
-            print(node.seq)
-        self.preorder(node.left)
-        self.preorder(node.right)
-
-    def postorder(self, node):
-        self.postorder(node.left)
-        if node.left == None:
-            print(node.seq)
-        self.postorder(node.right)
 
 def edit_distance(s, t):
     count = 0
@@ -43,9 +26,7 @@ def edit_distance(s, t):
             continue
         else:
             count += 1
-
     return count
-
 
 def build_d(sequences):
     d = np.ndarray(shape=(len(sequences), len(sequences)))
@@ -57,7 +38,7 @@ def build_d(sequences):
             d[i][j] = edit_distance(sequences[i], sequences[j])
     return d
 
-def build_tree(sequences, d):
+def min_pairs(sequences, d):
     indices = {x: 0 for x in range(len(sequences))}
     minimumD = math.inf
     minIndex = (0,0)
@@ -85,8 +66,7 @@ def build_tree(sequences, d):
             row += 1
             count = row + 1
     #dictionary of inital leaf pairs
-    return(indices)
-
+    return indices
 
 def read_sequences():
     file = 'sequences.txt'
@@ -110,16 +90,54 @@ def read_sequences():
 
     return sequences
 
+def leaf_subs(min):
+    nodes = []
+    for i in min:
+        strings = min.get(i)
+        if strings == None:
+            continue
+        print(min.get(i))
+        temp1 = Node(strings[0])
+        temp2 = Node(strings[1])
+        temp3 = Node(temp1.seq)
+        temp3.left = temp1
+        temp3.right= temp2
+        min[strings[0]] = None
+        min[strings[1]] = None
+        nodes.append(temp3)
+    return(nodes)
 
-def tree_test():
-    seq = ['abc', 'def', 'ghi', 'jkl', 'mno', 'pqr', 'stu']
+def build_tree(to_merge ,d):
+    min_dist = math.inf
+    min_indices = None
+    while len(to_merge) > 1:
+        for k in range(len(to_merge)):
+            i = k + 1
+            for i in range(len(to_merge)):
+                dist = d[to_merge[k].seq][to_merge[i].seq]
+                if dist < min_dist:
+                    min_dist = dist
+                    min_indices = (k,i)
+        new_parent = Node(to_merge[min_indices[0]].seq)
+        new_parent.left = to_merge[min_indices[0]]
+        new_parent.right = to_merge[min_indices[1]]
+        to_merge.append(new_parent)
+        if min_indices[0] > min_indices[1]:
+            del to_merge[min_indices[0]]
+            del to_merge[min_indices[1]]
+        else:
+            del to_merge[min_indices[1]]
+            del to_merge[min_indices[0]]
+    return(to_merge[0])
 
 def main():
     sequences = read_sequences()
     d = build_d(sequences)
     print(d)
-    build_tree(sequences, d)
-
+    min = min_pairs(sequences, d)
+    #Parent nodes of the leaf sequences
+    first_internals = leaf_subs(min)
+    root = build_tree(first_internals, d)
 
 if __name__ == '__main__':
     main()
