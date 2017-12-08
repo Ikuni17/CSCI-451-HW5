@@ -12,6 +12,7 @@ import sys
 import math
 
 
+# Clas to handle a node within the phylogeny tree. Seq is the index within the sequence array
 class Node():
     def __init__(self, sequence=None):
         self.left = None
@@ -19,6 +20,7 @@ class Node():
         self.seq = sequence
 
 
+# Finds the edit distance between two sequences
 def edit_distance(s, t):
     count = 0
     for i in range(len(s)):
@@ -29,39 +31,45 @@ def edit_distance(s, t):
     return count
 
 
+# Create the distance matrix for all pairwise sequences
 def build_d(sequences):
     d = np.ndarray(shape=(len(sequences), len(sequences)))
     for i in range(len(d)):
         j = i
         d[i][j] = 0
         j += 1
+        # Find the edit distance between the ith sequence and all other sequence and populate the distance matrix
         for j in range(len(d)):
             d[i][j] = edit_distance(sequences[i], sequences[j])
     return d
 
 
+# Creates the leaf pairs which make up the bottom of the tree based on the minimum distance between two sequences
+# which haven't been put within a pair yet
 def min_pairs(sequences, d):
+    # Keep track of which sequence is paired with another. If no pair yet, the value is 0
     indices = {x: 0 for x in range(len(sequences))}
+    # Keep track of the minimum distance and the corresponding indices
     minimumD = math.inf
     minIndex = (0, 0)
     count = 1
 
+    # Iterate through all sequences
     for row in range(len(d)):
-
+        # Check if this index has a pair already
         if indices.get(row) == 0:
+            # Iterate through all available sequences
             for col in range(count, len(d)):
-                # print(row, col)
                 if indices.get(col) == 0:
+                    # Keep track of the minimum distance for this sequence
                     if d[row][col] < minimumD:
                         minimumD = d[row][col]
                         minIndex = (row, col)
-                else:
-                    col += 1
             count += 1
-            # print(minIndex)
+            # Put the pair in the dictionary so they cannot be selected for others
             indices[row] = minIndex
             indices[minIndex[1]] = minIndex
-            # print(indices)
+            # Reset the minimum for the next pair to be found
             minimumD = math.inf
             minIndex = (0, 0)
         else:
