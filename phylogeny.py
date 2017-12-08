@@ -6,6 +6,8 @@ December 6, 2017
 '''
 
 # Interpreter: Python 3.6.3
+# Input: Text file in the same directory named sequences.txt
+# Output: Phylogeny tree printed in the console
 
 import numpy as np
 import sys
@@ -75,12 +77,13 @@ def min_pairs(sequences, d):
         else:
             row += 1
             count = row + 1
-    # dictionary of inital leaf pairs
+    # Dictionary of initial leaf pairs
     return indices
 
-#Reads a file names seqeunces.txt, each line becomes an array representing the sequences
-#If the sequences in the text file are not the same length, the program ends
-#returns a double array holding the sequences
+
+# Reads a file names sequences.txt, each line becomes an array representing the sequences
+# If the sequences in the text file are not the same length, the program ends
+# returns a double array holding the sequences
 def read_sequences():
     file = 'sequences.txt'
     sequences = []
@@ -92,82 +95,86 @@ def read_sequences():
             if checkLen == 0:
                 checkLen = length
             elif length != checkLen:
-                print('Sequences are not of same length, end program')
+                print('Sequences are not of same length, exiting program')
                 sys.exit()
             line = list(line)
             sequences.append(line)
     return sequences
 
-#Accepts a dictionary of pairs of seqeunces that represents the closest sequences to be merges to make a parent node
-#That is the first internal node from the leaf nodes
-#Returns a list of each parent node to the leaf nodes
+
+# Accepts a dictionary of pairs of seqeunces that represents the closest sequences to be merges to make a parent node
+# That is the first internal node from the leaf nodes
+# Returns a list of each parent node to the leaf nodes
 def leaf_subs(min):
-    #holds the parent nodes
+    # holds the parent nodes
     nodes = []
     for i in min:
-        #A tuple of the indices that are seqeunces in the sequences array
+        # A tuple of the indices that are seqeunces in the sequences array
         strings = min.get(i)
-        #If the two sequences have already been merged, skip them
+        # If the two sequences have already been merged, skip them
         if strings == None:
             continue
-        #Makes two children with the two sequences that have been selected to merge
+        # Makes two children with the two sequences that have been selected to merge
         temp1 = Node(strings[0])
         temp2 = Node(strings[1])
-        #Makes a parent node
+        # Makes a parent node
         temp3 = Node(temp1.seq)
         temp3.left = temp1
         temp3.right = temp2
         min[strings[0]] = None
         min[strings[1]] = None
-        #Adds parent node to the list to be returned
+        # Adds parent node to the list to be returned
         nodes.append(temp3)
-    #Returns the list of the parent nodes
+    # Returns the list of the parent nodes
     return (nodes)
 
-#Accepts a list of parent nodes that are the result of merging each leaf node
-#Builds a tree bottom up, and then selects the value to be held by each internal node that is the sequence with the
-#minimum average edit distance to its children
-#Returns the root node
+
+# Accepts a list of parent nodes that are the result of merging each leaf node
+# Builds a tree bottom up, and then selects the value to be held by each internal node that is the sequence with the
+# minimum average edit distance to its children
+# Returns the root node
 def build_tree(to_merge, d):
-    #initial min distance is infinity
+    # initial min distance is infinity
     min_dist = math.inf
     min_indices = None
-    #To merge is appended too, with parents of two internal nodes that have merged
-    #When the length is one, all the internal nodes have merged together to make the root node
+    # To merge is appended too, with parents of two internal nodes that have merged
+    # When the length is one, all the internal nodes have merged together to make the root node
     while len(to_merge) > 1:
-        #Calculates the pair of nodes in to_merge with the smallest edit distance between their sequence values
-        #The pair to be merged is represented by a tuple, holding the indeces of the selected nodes in to_merge
+        # Calculates the pair of nodes in to_merge with the smallest edit distance between their sequence values
+        # The pair to be merged is represented by a tuple, holding the indeces of the selected nodes in to_merge
         for k in range(len(to_merge)):
             for i in range(k + 1, len(to_merge)):
                 dist = d[to_merge[k].seq][to_merge[i].seq]
                 if dist < min_dist:
                     min_dist = dist
                     min_indices = (k, i)
-        #Parent of the merged internal nodes
+        # Parent of the merged internal nodes
         new_parent = Node(to_merge[min_indices[0]].seq)
-        #Sets the children of the new parent node
+        # Sets the children of the new parent node
         new_parent.left = to_merge[min_indices[0]]
         new_parent.right = to_merge[min_indices[1]]
-        #adds parent node to the list
+        # adds parent node to the list
         to_merge.append(new_parent)
-        #Removes the two children nodes from to_merge
+        # Removes the two children nodes from to_merge
         if min_indices[0] > min_indices[1]:
             del to_merge[min_indices[0]]
             del to_merge[min_indices[1]]
         else:
             del to_merge[min_indices[1]]
             del to_merge[min_indices[0]]
-        #Resests the minimum distance and the indices of ther nodes to merge to initial values
+        # Resests the minimum distance and the indices of ther nodes to merge to initial values
         min_dist = math.inf
         min_indices = None
-    #Returns the only node left in to_merge, the root
+    # Returns the only node left in to_merge, the root
     return (to_merge[0])
 
-#Traverses the tree after it has been build, prints the seqeunce at each node, starting with the root
+
+# Traverses the tree after it has been build, prints the sequence at each node, starting with the root
 def traverse(root, seq):
     current_level = [root]
     print('Resulting Phylogeny Tree By Layer')
     while current_level:
+        # Join a level of the tree into a single string
         print(' '.join(str(seq[node.seq]) for node in current_level))
         next_level = list()
         for n in current_level:
@@ -177,7 +184,8 @@ def traverse(root, seq):
                 next_level.append(n.right)
             current_level = next_level
 
-#A program that builds a phylogeny tree from a file of sequences, names 'sequences.txt'
+
+# A program that builds a phylogeny tree from a file of sequences, names 'sequences.txt'
 def main():
     sequences = read_sequences()
     d = build_d(sequences)
@@ -188,6 +196,7 @@ def main():
     for i in range(len(sequences)):
         sequences[i] = ''.join(x for x in sequences[i])
     traverse(root, sequences)
+
 
 if __name__ == '__main__':
     main()
