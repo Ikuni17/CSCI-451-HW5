@@ -12,7 +12,7 @@ import sys
 import math
 
 
-# Clas to handle a node within the phylogeny tree. Seq is the index within the sequence array
+# Class to handle a node within the phylogeny tree. Seq is the index within the sequence array
 class Node():
     def __init__(self, sequence=None):
         self.left = None
