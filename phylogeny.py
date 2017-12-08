@@ -122,13 +122,20 @@ def build_tree(to_merge ,d):
         new_parent.left = to_merge[min_indices[0]]
         new_parent.right = to_merge[min_indices[1]]
         to_merge.append(new_parent)
+        min_dist = math.inf
+
+
         if min_indices[0] > min_indices[1]:
             del to_merge[min_indices[0]]
             del to_merge[min_indices[1]]
         else:
             del to_merge[min_indices[1]]
             del to_merge[min_indices[0]]
+        min_indices = None
     return(to_merge[0])
+
+def print_tree(root):
+    pass
 
 def main():
     sequences = read_sequences()
@@ -137,6 +144,7 @@ def main():
     min = min_pairs(sequences, d)
     #Parent nodes of the leaf sequences
     first_internals = leaf_subs(min)
+    #root node of the built tree
     root = build_tree(first_internals, d)
 
 if __name__ == '__main__':
